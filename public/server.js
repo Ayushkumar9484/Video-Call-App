@@ -14,6 +14,8 @@ var message=document.getElementById("message")
 var s_button=document.getElementById("send_button")
 var message_container=document.getElementById("message_container")
 var ss_btn=document.getElementById("share_screen")
+var chat_header=document.getElementById("message_header")
+var count=0
 var constraints={
     //audio:true,
     video:true
@@ -50,7 +52,7 @@ navigator.mediaDevices.getUserMedia(constraints)
     .catch((err)=>{
         console.log(err)
     })
-   // username=prompt("enter your username")
+    username=prompt("enter your username")
     socket.on("connect_to_user",(e)=>{
         console.log(e.socketid)
         // {
@@ -107,6 +109,14 @@ navigator.mediaDevices.getUserMedia(constraints)
         remote_side.appendChild(para)
         remote_side.setAttribute("class","remote_message")
         message_container.appendChild(remote_side);
+
+        if(recieve.c==1){
+        var chat_header_para=document.createElement("p")
+        chat_header_para.innerHTML=recieve.username
+        chat_header_para.setAttribute("class","setName")
+        chat_header.appendChild(chat_header_para)
+        chat_header.style.backgroundColor="lightgreen"
+        }
     }
     })
     socket.on("web_answer",(e)=>{
@@ -139,6 +149,13 @@ navigator.mediaDevices.getUserMedia(constraints)
             remote_side.appendChild(para)
             remote_side.setAttribute("class","remote_message")
             message_container.appendChild(remote_side);
+            if(recieve.c==1){
+            var chat_header_para=document.createElement("p")
+            chat_header_para.innerHTML=recieve.username
+            chat_header_para.setAttribute("class","setName")
+            chat_header.appendChild(chat_header_para)
+            chat_header.style.backgroundColor="lightgreen"
+            }
         }
     })
       // data channel end
@@ -170,7 +187,7 @@ navigator.mediaDevices.getUserMedia(constraints)
       })
      
   })
-
+  
   s_button.addEventListener("click",()=>{
       var message_to_send=message.value
       if(message_to_send==" ")
@@ -178,9 +195,11 @@ navigator.mediaDevices.getUserMedia(constraints)
           alert("enter some message")
           return
       }
+      count++;
       let data={
           username:username,
-          message:message_to_send
+          message:message_to_send,
+          c:count
       }
       datachannel1.send(JSON.stringify(data))
       var para=document.createElement("p")
