@@ -1,0 +1,132 @@
+body{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+h1{
+    background-color: blue;
+}
+video{
+    width: 450px;
+    height: 640px;
+    display: inline;
+    border-width: 10px;
+    border-color: black;
+    margin-left: 50px;
+    margin-right: 25px;
+}
+#container{
+    position:fixed;
+    background-color: brown;
+    width: 1100px;
+    height:640px;
+}
+#message_container
+{
+    position: relative;
+    margin-left: 1100px; 
+    width: 435px;
+    height: 640px;
+    background-color: burlywood;
+    overflow: auto;
+}
+.btns{
+    background-color: tomato;
+    height: 80px;
+}
+.local_message{
+    background-color:azure;
+    border-radius: 30px;
+    width: fit-content;
+    height: fit-content;
+    margin-left: auto;
+    margin-right: 10px;
+}
+.remote_message{
+    background-color:azure;
+    border-radius:30px;
+    margin-left: 10px;
+    width: fit-content;
+    height: fit-content;
+}
+.inner_message{
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    max-width: 250px;
+    font-family: cursive;
+    font-style: italic;
+}
+
+/* .a_v{
+    margin-left: 40px;
+    border-radius: 50%;
+    margin-right: 40px;
+    height: 50px;
+    width: 50px;
+    border: none;
+    outline: none;
+} */
+#v_btn{
+    /* margin-top:8px; */
+    margin-left: 100px;
+    margin-right: 100px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+}
+#a_btn{
+    /* margin-top: 8px; */
+    margin-left: 100px;
+    margin-right: 100px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+}
+#on_vlick{
+    margin-top: 20px;
+    margin-left: 100px;
+    margin-right: 100px;
+    /* margin-bottom: 10px; */
+    width: 70px;
+    height: 50px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    position: absolute;
+}
+
+#share_screen{
+    border-radius: 10px;
+    margin-left: 300px;
+    margin-right: 100px;
+    width: 100px;
+    height: 70px;
+    /* margin-top: -10px; */
+    border: none;
+    outline: none;
+    position: absolute;
+    margin-top: 5px;
+}
+#message{
+    margin-left: 670px;
+    width: 357px;
+    position: absolute;
+    height: 80px;
+    background-color: rgb(193, 240, 167);
+}
+#send_button{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    margin-left:595px;
+    margin-top: 6px;
+    background-color:skyblue;
+}

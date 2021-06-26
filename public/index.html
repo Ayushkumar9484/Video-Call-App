@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <title>web cam</title>
+    <link rel="stylesheet" href="sheet.css">
+    <!-- <link rel="shortcut icon" href="#"> -->
+</head>
+<body>
+    <div id="container">
+    <video autoplay="true" id="video_element"></video>
+    <video autoplay="true" id="video_element_another"></video>
+    </div>
+    <div id="message_container"></div>
+
+    <div class="btns">
+        <button onclick="video_button()" class="a_v" id="v_btn">
+            <i class='fas fa-video' style="font-size:30px;" id="s_vedio"></i>
+        </button>
+        <button onclick="audio_button()" class="a_v" id="a_btn">
+                <i class='fas fa-microphone' style="font-size: 30px;"></i>
+                <!-- <i class='fas fa-microphone-slash' style='font-size:30px'></i> -->
+        </button>
+        <button id="on_vlick" class="a_v">JOIN CALL</button>
+        <button id="share_screen" class="a_v">START SCREEN SHARING</button>
+        
+        <textarea name="message" id="message"></textarea>
+        <button id="send_button">
+            <span class="glyphicon" style="font-size: 30px; color: white;">&#xe171;</span>
+        </button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js" integrity="sha512-iZIBSs+gDyTH0ZhUem9eQ1t4DcEn2B9lHxfRMeGQhyNdSUz+rb+5A3ummX6DQTOIs1XK0gOteOg/LPtSo9VJ+w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/socket.io/socket.io.js"></script> 
+    <script src="server.js"></script>
+</body>
+</html>
