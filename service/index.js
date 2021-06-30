@@ -29,7 +29,10 @@ console.log(static_path)
         socket.on("e",(e)=>{
             socket.broadcast.emit("en",e)
         })
-
+        socket.on("user_name",(e)=>{
+            console.log(e.username)
+            socket.broadcast.emit("user_name_recieved",e)
+        })
         socket.on("offer",(e)=>{
             //console.log(e.data)
             socket.broadcast.emit("web_offer",e)
@@ -51,7 +54,10 @@ console.log(static_path)
             //console.log(e.data)
             socket.broadcast.emit("peer2_candidate_recieve",e)
         })
-
+        socket.on("send_mail",(e)=>{
+            console.log("video recieved")
+            console.log(e.data)
+        })
      })
 
 // listening to port

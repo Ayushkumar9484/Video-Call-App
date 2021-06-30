@@ -15,9 +15,12 @@ var s_button=document.getElementById("send_button")
 var message_container=document.getElementById("message_container")
 var ss_btn=document.getElementById("share_screen")
 var chat_header=document.getElementById("message_header")
+// var record_btn=document.getElementById("record")
+// var stop_record=document.getElementById("stop_record")
 var count=0
+//var recordmedia,clips=[]
 var constraints={
-    //audio:true,
+    audio:true,
     video:true
 }
 var displayOptions={
@@ -25,6 +28,10 @@ var displayOptions={
         cursor:"always"
     },
     audio:false
+}
+var recordOptons={
+    audio:true,
+    video:true
 }
 const configuration={
     iceServers:[
@@ -52,6 +59,7 @@ navigator.mediaDevices.getUserMedia(constraints)
     .catch((err)=>{
         console.log(err)
     })
+    //console.log(localstream)
     username=prompt("enter your username")
     socket.on("connect_to_user",(e)=>{
         console.log(e.socketid)
@@ -77,7 +85,8 @@ navigator.mediaDevices.getUserMedia(constraints)
     localstream.getTracks().forEach((track)=>{
         senders.push(peer1.addTrack(track,localstream))
     })
-  console.log(senders[0])
+    console.log(senders)
+  //console.log(senders[0])
       peer1.onicecandidate=(e)=>{
           //alert("candidates of peer 1 send")
           console.log("candidates of peer 1");
@@ -164,8 +173,7 @@ navigator.mediaDevices.getUserMedia(constraints)
     localstream.getTracks().forEach((track)=>{
         senders.push(peer2.addTrack(track,localstream))
     })
-    console.log(senders[0])
-    
+    console.log(senders)
       peer2.onicecandidate=(e)=>{
           //alert("candidates of peer2 are send")
           console.log("candidates of peer2");
@@ -213,8 +221,47 @@ navigator.mediaDevices.getUserMedia(constraints)
       message.value=" "
   })
 
-
-  //localstream.getTracks().forEach(track=>senders.push(peer1.addTrack(track,localstream)))
+//   var options={
+//     mimeType: "video/webm; codecs=vp9"
+//   }
+//   record_btn.addEventListener("click",()=>{
+//       console.log("record button clicked ");
+//       navigator.mediaDevices.getDisplayMedia(recordOptons)
+//       .then((stream)=>{
+//         recordmedia=new MediaRecorder(stream,options)
+//         recordmedia.start(100)
+//         recordmedia.ondataavailable=(e)=>{ if(e.data) clips.push(e.data) }
+//     })
+//     .catch((err)=>{
+//         comsole.log(err)
+//     })
+// })
+//     stop_record.addEventListener("click",()=>{
+//         recordmedia.stop()
+//         console.log(clips)
+//         let recorded_vedio=document.createElement("video")
+//         recorded_vedio.controls=true
+//         let blob=new Blob(clips,{
+//             type:"video/webm"
+//         })
+//         clips=[]
+//         let vedioURL=URL.createObjectURL(blob);
+//         recorded_vedio.src=vedioURL
+//         console.log(recorded_vedio.src)
+//         message_container.appendChild(recorded_vedio)
+//         download(recorded_vedio)
+//   })
+  
+//   function download(recorded_vedio){
+//       let permission=confirm("want to download recoeding")
+//       if(!permission) return
+//       var d=document.createElement("a")
+//       d.href=recorded_vedio.src
+//       d.download="recorderVedio.webm"
+//       d.click()
+//       console.log(recorded_vedio.src)
+//       console.log("video downloaded ")
+//   }
 
   ss_btn.addEventListener("click",()=>{
       console.log("screen sharing is start")
@@ -222,12 +269,11 @@ navigator.mediaDevices.getUserMedia(constraints)
       .then((stream)=>{
           let VedioTracks=stream.getTracks()[0]
           vedio.srcObject=stream
-        senders[0].replaceTrack(VedioTracks)
-
+          senders[1].replaceTrack(VedioTracks)
         VedioTracks.onended=()=>{
             console.log("screen sharing is off")
-            //senders.find(sender=>sender.track.kind==='video').replaceTrack(localstream.getTracks()[0])
-            senders[0].replaceTrack(localstream.getTracks()[0])
+            console.log(localstream.getTracks()[0])
+            senders[1].replaceTrack(localstream.getTracks()[1])
             vedio.srcObject=localstream
         }
       }).catch((err)=>{
