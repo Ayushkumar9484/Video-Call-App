@@ -15,10 +15,10 @@ var s_button=document.getElementById("send_button")
 var message_container=document.getElementById("message_container")
 var ss_btn=document.getElementById("share_screen")
 var chat_header=document.getElementById("message_header")
-// var record_btn=document.getElementById("record")
-// var stop_record=document.getElementById("stop_record")
+var record_btn=document.getElementById("record")
+var stop_record=document.getElementById("stop_record")
 var count=0
-//var recordmedia,clips=[]
+var recordmedia,clips=[]
 var constraints={
     audio:true,
     video:true
@@ -221,47 +221,47 @@ navigator.mediaDevices.getUserMedia(constraints)
       message.value=" "
   })
 
-//   var options={
-//     mimeType: "video/webm; codecs=vp9"
-//   }
-//   record_btn.addEventListener("click",()=>{
-//       console.log("record button clicked ");
-//       navigator.mediaDevices.getDisplayMedia(recordOptons)
-//       .then((stream)=>{
-//         recordmedia=new MediaRecorder(stream,options)
-//         recordmedia.start(100)
-//         recordmedia.ondataavailable=(e)=>{ if(e.data) clips.push(e.data) }
-//     })
-//     .catch((err)=>{
-//         comsole.log(err)
-//     })
-// })
-//     stop_record.addEventListener("click",()=>{
-//         recordmedia.stop()
-//         console.log(clips)
-//         let recorded_vedio=document.createElement("video")
-//         recorded_vedio.controls=true
-//         let blob=new Blob(clips,{
-//             type:"video/webm"
-//         })
-//         clips=[]
-//         let vedioURL=URL.createObjectURL(blob);
-//         recorded_vedio.src=vedioURL
-//         console.log(recorded_vedio.src)
-//         message_container.appendChild(recorded_vedio)
-//         download(recorded_vedio)
-//   })
+  var options={
+    mimeType: "video/webm; codecs=vp9"
+  }
+  record_btn.addEventListener("click",()=>{
+      console.log("record button clicked ");
+      navigator.mediaDevices.getDisplayMedia(recordOptons)
+      .then((stream)=>{
+        recordmedia=new MediaRecorder(stream,options)
+        recordmedia.start(100)
+        recordmedia.ondataavailable=(e)=>{ if(e.data) clips.push(e.data) }
+    })
+    .catch((err)=>{
+        comsole.log(err)
+    })
+})
+    stop_record.addEventListener("click",()=>{
+        recordmedia.stop()
+        console.log(clips)
+       // let recorded_vedio=document.createElement("video")
+       // recorded_vedio.controls=true
+        let blob=new Blob(clips,{
+            type:"video/webm"
+        })
+        let vedioURL=URL.createObjectURL(blob);
+        //recorded_vedio.src=vedioURL
+        //console.log(recorded_vedio.src)
+        // message_container.appendChild(recorded_vedio)
+        download(vedioURL)
+        clips=[]
+  })
   
-//   function download(recorded_vedio){
-//       let permission=confirm("want to download recoeding")
-//       if(!permission) return
-//       var d=document.createElement("a")
-//       d.href=recorded_vedio.src
-//       d.download="recorderVedio.webm"
-//       d.click()
-//       console.log(recorded_vedio.src)
-//       console.log("video downloaded ")
-//   }
+  function download(vedioURL){
+      let permission=confirm("want to download recoeding")
+      if(!permission) return
+      var d=document.createElement("a")
+      d.href=vedioURL
+      d.download="recorderVedio.webm"
+      d.click()
+      console.log(vedioURL)
+      console.log("video downloaded ")
+  }
 
   ss_btn.addEventListener("click",()=>{
       console.log("screen sharing is start")

@@ -2,6 +2,7 @@ const express=require("express");
 const path=require("path");
 const http=require("http");
 const socketIO=require("socket.io")
+const nodemailer=require("nodemailer")
 
 const app=express();
 // connect express app to http server
@@ -10,10 +11,6 @@ const static_path=path.join(__dirname,"../public")
 let io=socketIO(server)
 
 app.use(express.static(static_path))
-
-// app.get("/",(req,res)=>{
-//     res.send("index.html",{root:path.join(__dirname,"../public")})
-// })
 console.log(static_path)
     
         io.on("connection",(socket)=>{
@@ -54,10 +51,7 @@ console.log(static_path)
             //console.log(e.data)
             socket.broadcast.emit("peer2_candidate_recieve",e)
         })
-        socket.on("send_mail",(e)=>{
-            console.log("video recieved")
-            console.log(e.data)
-        })
+        
      })
 
 // listening to port
