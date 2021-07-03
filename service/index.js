@@ -51,7 +51,16 @@ console.log(static_path)
             //console.log(e.data)
             socket.broadcast.emit("peer2_candidate_recieve",e)
         })
-        
+
+        socket.on("make_screen_big",(e)=>{
+            console.log(e.status)
+            socket.broadcast.emit("make_big",e)
+        })
+
+        socket.on("make_screen_small",(e)=>{
+            console.log(e.status)
+            socket.broadcast.emit("make_small",e)
+        })
      })
 
 // listening to port

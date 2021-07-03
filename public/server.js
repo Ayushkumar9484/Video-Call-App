@@ -7,16 +7,18 @@ var datachannel1
 //var datachannel2
 let username
 var sender_to
-const vedio=document.getElementById("video_element")
+const localVideo=document.getElementById("video_element")
 const another_vedio=document.getElementById("video_element_another")
 const container=document.getElementById("container")
 var message=document.getElementById("message")
 var s_button=document.getElementById("send_button")
 var message_container=document.getElementById("message_container")
-var ss_btn=document.getElementById("share_screen")
+var screen_share_btn=document.getElementById("share_screen")
 var chat_header=document.getElementById("message_header")
 var record_btn=document.getElementById("record")
 var stop_record=document.getElementById("stop_record")
+var muteRemoteAudio=document.getElementById("remoteaudio")
+var dropDown=document.getElementById("dropDown")
 var count=0
 var recordmedia,clips=[]
 var constraints={
@@ -48,13 +50,14 @@ const configuration={
 navigator.mediaDevices.getUserMedia(constraints)
     .then((stream)=>{
         localstream=stream
-        vedio.srcObject=stream;
+        localVideo.autoplay=true;
+        localVideo.muted=true
+        localVideo.srcObject=localstream;
         socket.emit("e",{
             ans:"already in"
         })
          //sender_to=stream.getTracks()
   //      localstream.getTracks().forEach(track=>senders.push(peer1.addTrack(track,localstream)))
-  
 })
     .catch((err)=>{
         console.log(err)
@@ -81,7 +84,6 @@ navigator.mediaDevices.getUserMedia(constraints)
         ordered:true,
         maxPacketLifeTime:3000
     })
-    
     localstream.getTracks().forEach((track)=>{
         senders.push(peer1.addTrack(track,localstream))
     })
@@ -136,11 +138,7 @@ navigator.mediaDevices.getUserMedia(constraints)
         console.log(peer1)
     })
 
-    socket.on("web_offer",(e)=>{
-       // alert("offer recieved")
-        // var answer=confirm("allow to video call")
-        // if(!answer) return 
-        
+    socket.on("web_offer",(e)=>{        
       peer2=new RTCPeerConnection(configuration)
       // data channel start
       peer2.addEventListener("datachannel",(e)=>{
@@ -167,15 +165,12 @@ navigator.mediaDevices.getUserMedia(constraints)
             }
         }
     })
-      // data channel end
-    //   senders.push(peer2.addStream(localstream))
     
     localstream.getTracks().forEach((track)=>{
         senders.push(peer2.addTrack(track,localstream))
     })
     console.log(senders)
       peer2.onicecandidate=(e)=>{
-          //alert("candidates of peer2 are send")
           console.log("candidates of peer2");
           socket.emit("peer2_candidate",{
               data:e.candidate
@@ -239,15 +234,10 @@ navigator.mediaDevices.getUserMedia(constraints)
     stop_record.addEventListener("click",()=>{
         recordmedia.stop()
         console.log(clips)
-       // let recorded_vedio=document.createElement("video")
-       // recorded_vedio.controls=true
         let blob=new Blob(clips,{
             type:"video/webm"
         })
         let vedioURL=URL.createObjectURL(blob);
-        //recorded_vedio.src=vedioURL
-        //console.log(recorded_vedio.src)
-        // message_container.appendChild(recorded_vedio)
         download(vedioURL)
         clips=[]
   })
@@ -263,25 +253,62 @@ navigator.mediaDevices.getUserMedia(constraints)
       console.log("video downloaded ")
   }
 
-  ss_btn.addEventListener("click",()=>{
+  screen_share_btn.addEventListener("click",()=>{
       console.log("screen sharing is start")
       navigator.mediaDevices.getDisplayMedia(displayOptions)
       .then((stream)=>{
+          socket.emit("make_screen_big",{
+              status:"make big"
+          })
           let VedioTracks=stream.getTracks()[0]
-          vedio.srcObject=stream
+          localVideo.srcObject=stream
           senders[1].replaceTrack(VedioTracks)
         VedioTracks.onended=()=>{
             console.log("screen sharing is off")
             console.log(localstream.getTracks()[0])
             senders[1].replaceTrack(localstream.getTracks()[1])
-            vedio.srcObject=localstream
+            localVideo.srcObject=localstream
+            socket.emit("make_screen_small",{
+                status:"make small"
+            })
         }
       }).catch((err)=>{
           console.log(err)
       })
   })
 
+  socket.on("make_big",(e)=>{
+      console.log(e.status)
+      another_vedio.style.width="800px";
+      another_vedio.style.height="700px";
+      another_vedio.style.marginTop="-300px";
+      another_vedio.style.marginLeft="310px";
 
+      localVideo.style.marginLeft="10px";
+      localVideo.style.marginTop="-100px";
+      localVideo.style.width="300px";
+      localVideo.style.height="400px";
+  })
+
+  socket.on("make_small",(e)=>{
+      console.log(e.status)
+      another_vedio.style.width="450px";
+      another_vedio.style.height="640px";
+      another_vedio.style.marginLeft="50px";
+      another_vedio.style.marginRight="25px";
+      another_vedio.style.marginTop="0px";
+
+      localVideo.style.width="450px";
+      localVideo.style.height="640px";
+      localVideo.style.marginLeft="50px";
+      localVideo.style.marginRight="25px";
+      localVideo.style.marginTop="0px";
+  })
+  let RemoteMuted=false
+    muteRemoteAudio.addEventListener("click",()=>{
+        RemoteMuted=!RemoteMuted
+      another_vedio.muted=RemoteMuted
+    })
 
   add_remote_stream=(e)=>{
       another_vedio.srcObject=e.streams[0]
