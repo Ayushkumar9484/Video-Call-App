@@ -1,41 +1,42 @@
-var senders=[]
-let socket=io()
-var localstream
-var peer1
-var peer2
-var datachannel1
-//var datachannel2
-let username
+let socket=io()         // Connection with socket
+var senders=[]          // array for storing local Media Stream tracks
+var localstream         // object for storing local Media Stream
+var peer1               // User 1
+var peer2               // User2
+var datachannel         // Data Channel Object
+let username            // Object for Username
 var sender_to
 const localVideo=document.getElementById("video_element")
-const another_vedio=document.getElementById("video_element_another")
+const remote_video=document.getElementById("video_element_another")
 const container=document.getElementById("container")
 var message=document.getElementById("message")
-var s_button=document.getElementById("send_button")
+var send_button=document.getElementById("send_button")
 var message_container=document.getElementById("message_container")
-var screen_share_btn=document.getElementById("share_screen")
+var screen_share_button=document.getElementById("share_screen")
 var chat_header=document.getElementById("message_header")
 var record_btn=document.getElementById("record")
 var stop_record=document.getElementById("stop_record")
 var muteRemoteAudio=document.getElementById("remoteaudio")
 var dropDown=document.getElementById("dropDown")
-var count=0
-var recordmedia,clips=[]
-var constraints={
+var count=0                     // count of users
+var recordmedia                 // instance for initiating media Recorder
+var clips=[]                    // array for storing recorded data
+
+var constraints={               // configuration for GetUserMedia
     audio:true,
     video:true
 }
-var displayOptions={
+var displayOptions={            // Configuration for Present Screen
     video:{
         cursor:"always"
     },
     audio:false
 }
-var recordOptons={
+var recordOptons={              // Configuration for Recording
     audio:true,
     video:true
 }
-const configuration={
+const configuration={           // Stun Servers List
     iceServers:[
         {urls:["stun:stun.voipstunt.com",
         "stun:stun.l.google.com:19302",
@@ -46,29 +47,19 @@ const configuration={
 ]}
 ]
 };
-// wrong spelling of   getUserMedia
-navigator.mediaDevices.getUserMedia(constraints)
+navigator.mediaDevices.getUserMedia(constraints)        // Getting Camera and Audio Access
     .then((stream)=>{
         localstream=stream
         localVideo.autoplay=true;
         localVideo.muted=true
         localVideo.srcObject=localstream;
-        socket.emit("e",{
-            ans:"already in"
-        })
-         //sender_to=stream.getTracks()
-  //      localstream.getTracks().forEach(track=>senders.push(peer1.addTrack(track,localstream)))
 })
     .catch((err)=>{
         console.log(err)
     })
-    //console.log(localstream)
-    username=prompt("enter your username")
-    socket.on("connect_to_user",(e)=>{
-        console.log(e.socketid)
-        // {
-            console.log(e.count)
-            document.getElementById("on_vlick").addEventListener("click",()=>{
+    username=prompt("enter your username")              // Username Input
+    socket.on("connect_to_user",(e)=>{                  // Socket Listening
+            document.getElementById("join").addEventListener("click",()=>{
             console.log("entered")
             
             if(e.count==1)
@@ -76,40 +67,34 @@ navigator.mediaDevices.getUserMedia(constraints)
             
             if(e.count>1)
             {
-                //username=prompt("enter your username")
-                peer1 = new RTCPeerConnection(configuration);
-               // senders.push(peer1.addTrack(sender_to[0]))
-                // data channel
-                datachannel1=peer1.createDataChannel("mydatachannel",{
-        ordered:true,
-        maxPacketLifeTime:3000
-    })
-    localstream.getTracks().forEach((track)=>{
+                peer1 = new RTCPeerConnection(configuration);           // Creating Peer Connection of Peer1
+                datachannel=peer1.createDataChannel("mydatachannel",{   // Creating Data Channel of Peer1
+                ordered:true,
+                maxPacketLifeTime:3000
+                })
+    localstream.getTracks().forEach((track)=>{                          // Pushing Media Tracks of Peer1 in senders array
         senders.push(peer1.addTrack(track,localstream))
     })
     console.log(senders)
-  //console.log(senders[0])
-      peer1.onicecandidate=(e)=>{
-          //alert("candidates of peer 1 send")
+      peer1.onicecandidate=(e)=>{                  // Getting Ice Candidates on Peer1
           console.log("candidates of peer 1");
           socket.emit("peer1_candidates",{
               data:e.candidate
           })
       }
-      peer1.createOffer()
+      peer1.createOffer()                          // offer Gernerated by Peer1 for Peer2
       .then((offer)=>{
-          peer1.setLocalDescription(offer);
-          socket.emit("offer",{
-              data:offer
+          peer1.setLocalDescription(offer);        // setting Local description of Peer1
+          socket.emit("offer",{                    // Sending offer and Username to server
+              data:offer,
+              username:username
           })
       })
       .catch((err)=>{
           console.log(err)
       })
     }
-
-    // add here
-    datachannel1.onmessage=(e)=>{
+    datachannel.onmessage=(e)=>{                   // Recieving messages on DataChannel of Peer1
         var recieve=JSON.parse(e.data)
         console.log("message recieved")
         console.log(recieve.username+" : "+recieve.message)
@@ -120,32 +105,28 @@ navigator.mediaDevices.getUserMedia(constraints)
         remote_side.appendChild(para)
         remote_side.setAttribute("class","remote_message")
         message_container.appendChild(remote_side);
-
-        if(recieve.c==1){
-        var chat_header_para=document.createElement("p")
-        chat_header_para.innerHTML=recieve.username
-        chat_header_para.setAttribute("class","setName")
-        chat_header.appendChild(chat_header_para)
-        chat_header.style.backgroundColor="lightgreen"
-        }
     }
     })
-    socket.on("web_answer",(e)=>{
+    socket.on("web_answer",(e)=>{                  // Listenning to Server on web_answer call
         console.log("peer1")
-       // alert("answer recieved")
-        peer1.setRemoteDescription(new RTCSessionDescription(e.data))
-        peer1.ontrack=add_remote_stream
+        peer1.setRemoteDescription(new RTCSessionDescription(e.data))   // Setting Remote Description of peer1
+        peer1.ontrack=add_remote_stream                                 // Setting Peer2 Media Stream on Peer1
         console.log(peer1)
+        
+        // Setting message Header of peer1
+        var chat_header_para=document.createElement("p")
+        chat_header_para.innerHTML=e.username
+        chat_header_para.setAttribute("class","setName")
+        chat_header.appendChild(chat_header_para)
+        chat_header.style.borderBottom="thin solid black"
     })
 
-    socket.on("web_offer",(e)=>{        
-      peer2=new RTCPeerConnection(configuration)
-      // data channel start
-      peer2.addEventListener("datachannel",(e)=>{
+    socket.on("web_offer",(e)=>{                            // Listenning to Server on web_offer Call
+      peer2=new RTCPeerConnection(configuration)            // Creating Peer Connection of Peer2
+      peer2.addEventListener("datachannel",(e)=>{           // Recieving DataChannel Request
         console.log("channel connected")
-        datachannel1=e.channel
-        //datachannel2=datachannel1
-        datachannel1.onmessage=(e)=>{
+        datachannel=e.channel
+        datachannel.onmessage=(e)=>{                        // Recieving messages on Data Channel of Peer2
             var recieve=JSON.parse(e.data)
             console.log("message recieved")
             console.log(recieve.username+" : "+recieve.message)
@@ -156,34 +137,34 @@ navigator.mediaDevices.getUserMedia(constraints)
             remote_side.appendChild(para)
             remote_side.setAttribute("class","remote_message")
             message_container.appendChild(remote_side);
-            if(recieve.c==1){
-            var chat_header_para=document.createElement("p")
-            chat_header_para.innerHTML=recieve.username
-            chat_header_para.setAttribute("class","setName")
-            chat_header.appendChild(chat_header_para)
-            chat_header.style.backgroundColor="lightgreen"
-            }
         }
     })
     
-    localstream.getTracks().forEach((track)=>{
+    localstream.getTracks().forEach((track)=>{              // Pushing Media Tracks of Peer2 in senders array
         senders.push(peer2.addTrack(track,localstream))
     })
     console.log(senders)
-      peer2.onicecandidate=(e)=>{
+      peer2.onicecandidate=(e)=>{                           // Getting Ice Candidates on Peer2
           console.log("candidates of peer2");
           socket.emit("peer2_candidate",{
               data:e.candidate
             })
         }
-        peer2.setRemoteDescription(new RTCSessionDescription(e.data))
-        peer2.ontrack=add_remote_stream
-        
-      peer2.createAnswer()
+        peer2.setRemoteDescription(new RTCSessionDescription(e.data))       // Setting Remote Description of Peer2
+        peer2.ontrack=add_remote_stream                                     // Setting Peer1 Media Stream on Peer2
+        // Setting message Header of peer2
+        var chat_header_para=document.createElement("p")
+            chat_header_para.innerHTML=e.username
+            chat_header_para.setAttribute("class","setName")
+            chat_header.appendChild(chat_header_para)
+            chat_header.style.borderBottom="thin solid black"
+
+      peer2.createAnswer()                                   // Answer generated by Peer2 for Peer1
       .then((answer)=>{
-          peer2.setLocalDescription(answer)
-          socket.emit("answer",{
-              data:answer
+          peer2.setLocalDescription(answer)                  // Setting Local Description of Peer2
+          socket.emit("answer",{                             // Sending Answer and Username to Server
+              data:answer,
+              username:username
           })
           console.log("peer2")
           console.log(peer2)
@@ -191,20 +172,18 @@ navigator.mediaDevices.getUserMedia(constraints)
      
   })
   
-  s_button.addEventListener("click",()=>{
+  send_button.addEventListener("click",()=>{                   // Event Handler for Sending Message    
       var message_to_send=message.value
       if(message_to_send==" ")
       {
           alert("enter some message")
           return
       }
-      count++;
       let data={
           username:username,
           message:message_to_send,
-          c:count
       }
-      datachannel1.send(JSON.stringify(data))
+      datachannel.send(JSON.stringify(data))                // Data Channel Send Function To Send Data TO Another Peer
       var para=document.createElement("p")
       para.innerHTML=message_to_send
       para.setAttribute("class","inner_message")
@@ -219,9 +198,9 @@ navigator.mediaDevices.getUserMedia(constraints)
   var options={
     mimeType: "video/webm; codecs=vp9"
   }
-  record_btn.addEventListener("click",()=>{
+  record_btn.addEventListener("click",()=>{                     // Event Handler for Start Recording
       console.log("record button clicked ");
-      navigator.mediaDevices.getDisplayMedia(recordOptons)
+      navigator.mediaDevices.getDisplayMedia(recordOptons)      // Getting Display Media fro recording
       .then((stream)=>{
         recordmedia=new MediaRecorder(stream,options)
         recordmedia.start(100)
@@ -231,18 +210,18 @@ navigator.mediaDevices.getUserMedia(constraints)
         comsole.log(err)
     })
 })
-    stop_record.addEventListener("click",()=>{
+    stop_record.addEventListener("click",()=>{                  // Event Handler for Stop recording
         recordmedia.stop()
         console.log(clips)
-        let blob=new Blob(clips,{
+        let blob=new Blob(clips,{                               // Assembling clips data into one obejct using Blob Method
             type:"video/webm"
         })
         let vedioURL=URL.createObjectURL(blob);
-        download(vedioURL)
+        download(vedioURL)                                      // calling download function
         clips=[]
   })
   
-  function download(vedioURL){
+  function download(vedioURL){                                  // Doenload function for downloading Recorded Video
       let permission=confirm("want to download recoeding")
       if(!permission) return
       var d=document.createElement("a")
@@ -253,9 +232,9 @@ navigator.mediaDevices.getUserMedia(constraints)
       console.log("video downloaded ")
   }
 
-  screen_share_btn.addEventListener("click",()=>{
+  screen_share_button.addEventListener("click",()=>{               // Event Handler for Screen Presenting 
       console.log("screen sharing is start")
-      navigator.mediaDevices.getDisplayMedia(displayOptions)
+      navigator.mediaDevices.getDisplayMedia(displayOptions)    // Getting Display Media for sharing
       .then((stream)=>{
           socket.emit("make_screen_big",{
               status:"make big"
@@ -277,12 +256,12 @@ navigator.mediaDevices.getUserMedia(constraints)
       })
   })
 
-  socket.on("make_big",(e)=>{
+  socket.on("make_big",(e)=>{                       // Listenning to server on make_big call
       console.log(e.status)
-      another_vedio.style.width="800px";
-      another_vedio.style.height="700px";
-      another_vedio.style.marginTop="-300px";
-      another_vedio.style.marginLeft="310px";
+      remote_video.style.width="800px";
+      remote_video.style.height="700px";
+      remote_video.style.marginTop="-300px";
+      remote_video.style.marginLeft="310px";
 
       localVideo.style.marginLeft="10px";
       localVideo.style.marginTop="-100px";
@@ -290,54 +269,82 @@ navigator.mediaDevices.getUserMedia(constraints)
       localVideo.style.height="400px";
   })
 
-  socket.on("make_small",(e)=>{
+  socket.on("make_small",(e)=>{                     // Listenning to server on make_small call
       console.log(e.status)
-      another_vedio.style.width="450px";
-      another_vedio.style.height="640px";
-      another_vedio.style.marginLeft="50px";
-      another_vedio.style.marginRight="25px";
-      another_vedio.style.marginTop="0px";
+      remote_video.style.width="420px";
+      remote_video.style.height="1000px";
+      remote_video.style.marginLeft="40px";
+      remote_video.style.marginRight="20px";
+      remote_video.style.marginTop="-150px";
 
-      localVideo.style.width="450px";
-      localVideo.style.height="640px";
-      localVideo.style.marginLeft="50px";
-      localVideo.style.marginRight="25px";
-      localVideo.style.marginTop="0px";
+      localVideo.style.width="420px";
+      localVideo.style.height="1000px";
+      localVideo.style.marginLeft="40px";
+      localVideo.style.marginRight="20px";
+      localVideo.style.marginTop="-150px";
   })
-  let RemoteMuted=false
-    muteRemoteAudio.addEventListener("click",()=>{
-        RemoteMuted=!RemoteMuted
-      another_vedio.muted=RemoteMuted
-    })
 
-  add_remote_stream=(e)=>{
-      another_vedio.srcObject=e.streams[0]
+
+  add_remote_stream=(e)=>{                          // add_remote_stream function Description
+      remote_video.srcObject=e.streams[0]
   }
-  socket.on("peer1_candidate_recieve",(e)=>{
+  socket.on("peer1_candidate_recieve",(e)=>{        
       console.log("peer1 candidate recieved")
-      peer2.addIceCandidate(e.data)
+      peer2.addIceCandidate(e.data)                 // Adding Ice Candidates of Peer1 in Peer2
   })
   
   socket.on("peer2_candidate_recieve",(e)=>{
       console.log("peer2 candidate recieved")
-      peer1.addIceCandidate(e.data)
+      peer1.addIceCandidate(e.data)                 // Adding Ice Candidates of Peer2 in Peer1
   })
 })
 
-// VEDIO ON/OFF FUNCTION
-
+document.getElementById("video_off").style.display="none"
 let vflag=true;
-function video_button()
+function video_button()                             // Video ON/OFF function
 {
     vflag=!vflag
     localstream.getVideoTracks()[0].enabled=vflag
+    if(vflag)
+    {
+        document.getElementById("video_on").style.display="inline"
+        document.getElementById("video_off").style.display="none"
+    }
+    else{
+        document.getElementById("video_off").style.display="inline"
+        document.getElementById("video_on").style.display="none"
+    }
 }
-// AUDIO ON OFF FUNCTION
 
+document.getElementById("mic_off").style.display="none"    
 let aflag=true;
-function audio_button()
+function audio_button()                             // Audio ON/OFF function
 {
     aflag=!aflag
     localstream.getAudioTracks()[0].enabled=aflag
+    if(aflag)
+    {
+        document.getElementById("mic_on").style.display="inline"
+        document.getElementById("mic_off").style.display="none"
+    }
+    else{
+        document.getElementById("mic_off").style.display="inline"
+        document.getElementById("mic_on").style.display="none"
+    }
     //alert("button pressed")
 }
+document.getElementById("remote_audio_off").style.display="none"
+let RemoteMuted=false
+  muteRemoteAudio.addEventListener("click",()=>{        // Event Handler for Mute Another Peer Audio
+      RemoteMuted=!RemoteMuted
+    remote_video.muted=RemoteMuted
+    if(!RemoteMuted)
+    {
+        document.getElementById("remote_audio_on").style.display="inline"
+        document.getElementById("remote_audio_off").style.display="none"
+    }
+    else{
+        document.getElementById("remote_audio_off").style.display="inline"
+        document.getElementById("remote_audio_on").style.display="none"
+    }
+  })

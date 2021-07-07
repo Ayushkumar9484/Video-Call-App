@@ -5,39 +5,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-    <title>web cam</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css" integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni" crossorigin="anonymous">
+    <title>VIDEO APP</title>
     <link rel="stylesheet" href="sheet.css">
-    <!-- <link rel="shortcut icon" href="#"> -->
 </head>
 <body>
     <div id="container">
     <video autoplay="true" id="video_element"></video>
     <video autoplay="true" id="video_element_another"></video>
-    <button id="remoteaudio">mute remote audio</button>
-    </div>
-    <div id="message_header"></div>
-    <div id="message_container"></div>
+</div>
+<div id="message_header"></div>
+<div id="message_container"></div>
 
-    <div class="btns">
-        <button onclick="video_button()"  id="v_btn">
-            <i class='fas fa-video' style="font-size:30px;" id="s_vedio"></i>
-        </button>
-        <button onclick="audio_button()"  id="a_btn">
-                <i class='fas fa-microphone' style="font-size: 30px;"></i>
-                <!-- <i class='fas fa-microphone-slash' style='font-size:30px'></i> -->
-        </button>
-        <button id="on_vlick" >JOIN CALL</button>
-        <button id="share_screen" >START SCREEN SHARING</button>
-        <button id="record">RECORD</button>
-        <button id="stop_record">Stop</button>
-        <textarea name="message" id="message" placeholder="SEND MESSAGE"></textarea>
-        <button id="send_button">
-            <span class="glyphicon" style="font-size: 30px; color: white;">&#xe171;</span>
-        </button>
+<div class="btns">
+
+    <!-- VIDEO BUTTON  -->
+    <button onclick="video_button()"  id="v_btn" class="btns_btn">
+        <i class="fas fa-video" id="video_on" style="font-size:xx-large;"></i>
+        <i class="fas fa-video-slash" id="video_off" style="font-size:xx-large;"></i>
+    </button>
+
+    <!-- AUDIO BUTTON  -->
+    <button onclick="audio_button()"  id="a_btn" class="btns_btn">
+        <i class="fas fa-microphone" id="mic_on" style="font-size:xx-large;"></i>
+        <i class="fas fa-microphone-slash" id="mic_off" style="font-size:xx-large;"></i>
+    </button>
+
+    <!-- JOIN BUTTON  -->
+    <button id="join" class="btns_btn" >
+        <i class="far fa-handshake" style="font-size: xx-large;"></i>
+    </button>
+
+    <!-- SCREEN SHARE BUTTON  -->
+    <button id="share_screen" class="btns_btn"></button>
+
+    <!-- RECORD BUTTON  -->
+    <button id="record" class="btns_btn" style="justify-content: center;">
+        <i class="fas fa-record-vinyl" style="color: red; font-size: xxx-large; margin-left: -5px;"></i>
+    </button>
+
+    <!-- STOP RECORD BUTTON  -->
+    <button id="stop_record" class="btns_btn" style="justify-content: center;">
+        <i class="fas fa-stop-circle" style="font-size: xxx-large; color: red; margin-left: -5px;"></i>
+    </button>
+
+    <!-- REMOTE AUDIO ON/OFF BUTTON  -->
+    <button id="remoteaudio" class="btns_btn">
+        <i class="fa fa-volume-up" aria-hidden="true" id="remote_audio_on" style="font-size: xx-large;"></i>
+        <i class="fa fa-volume-down" aria-hidden="true" id="remote_audio_off" style="font-size: xx-large;"></i>
+    </button>
     </div>
+
+    <!-- INPUT TAG FOR WRITING MESSAGE  -->
+    <input type="text" id="message" placeholder="SEND MESSAGE">
+
+    <!-- // SEND BUTTON  -->
+    <button id="send_button">
+        <span class="glyphicon" style="font-size: 30px; color: white;">&#xe171;</span>
+    </button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js" integrity="sha512-iZIBSs+gDyTH0ZhUem9eQ1t4DcEn2B9lHxfRMeGQhyNdSUz+rb+5A3ummX6DQTOIs1XK0gOteOg/LPtSo9VJ+w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/socket.io/socket.io.js"></script> 
     <script src="server.js"></script>
