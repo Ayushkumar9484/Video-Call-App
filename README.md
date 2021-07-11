@@ -1,5 +1,5 @@
 *   HOW TO START THIS APP
-This is a singke page application, which allows 2 user to have a video chat with messaging feature also.
+1) This is a singke page application, which allows 2 user to have a video chat with messaging feature also.
 to start this app, first clone this git repository, then open this applicaion in visual studio code or any other application
 Then, run command "npm run start" to start our server and then see this app in localhost:3000
 
