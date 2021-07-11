@@ -5,13 +5,13 @@ Then, run command "npm run start" to start our server and then see this app in l
 
 * BUTTON DESCRIPTION
 
-First Button : Video ON/OFF Button
-Second Button : Audio ON/OFF Button
-Third Button : Join Call Button
-Fourth Button : Screen Sharing Buttun
-Fifth Button : Start Recording Button
-Sixth Button : Stop Recording Button
-Seventh Button : Remote Audio ON/OFF Button
+->  First Button : Video ON/OFF Button
+->  Second Button : Audio ON/OFF Button
+->  Third Button : Join Call Button
+->  Fourth Button : Screen Sharing Buttun
+->  Fifth Button : Start Recording Button
+->  Sixth Button : Stop Recording Button
+->  Seventh Button : Remote Audio ON/OFF Button
 
 * FEATURES THAT I HAVE ADDED IN THIS APPLICATION
 1) Video ON/OFF FUNCTIONALITY
