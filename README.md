@@ -26,8 +26,8 @@ Then, run command "npm run start" to start our server and then see this app in l
 2) Now Enter User Name.
 
 *   WORKING OF FEATURES
-Before connection establishment, no one can send message as it able to send messages over connection only.
-1) In order to share screeen, you must select on screen or entire screen or window
-2) To Record Video, do not forgot to check audio checkbox once you click on record and button and to stop recording and also click on stop sharing dialogue at bottom,
+1)  Before connection establishment, no one can send message as it able to send messages over connection only.
+2) In order to share screeen, you must select on screen or entire screen or window
+3) To Record Video, do not forgot to check audio checkbox once you click on record and button and to stop recording and also click on stop sharing dialogue at bottom,
     one must click on stop button and then you have option to download recorded video.
-3) You also have an option to mute another user audio by clicking on last button.
+4) You also have an option to mute another user audio by clicking on last button.
