@@ -14,12 +14,12 @@ Then, run command "npm run start" to start our server and then see this app in l
 7) Seventh Button : Remote Audio ON/OFF Button
 
 *   FEATURES THAT I HAVE ADDED IN THIS APPLICATION
-1) Video ON/OFF FUNCTIONALITY
-2) AUDIO ON/OFF FUNCTIONALITY
-3) SCREEN PRESENT FUNCTIONALIYTY
-4) RECORDING FUNCTIONALITY
-5) AUDIO ON/OFF OF ANOTHER PEER
-6) MESSAGING FUNCTIONALITY
+1) Video ON/OFF FUNCTIONALITY : Through this, User can stop his/her video and ON his/her Video.
+2) AUDIO ON/OFF FUNCTIONALITY : Through this, User can MUTE his/her Audio and UNMUTE his/her Audio.
+3) SCREEN PRESENT FUNCTIONALIYTY : You can Present Screen through this feature.
+4) RECORDING FUNCTIONALITY : Through this, User can start recording.
+5) AUDIO ON/OFF OF ANOTHER PEER : Through this, User can MUTE Another User Audio and UNMUTE another user Audio.
+6) MESSAGING FUNCTIONALITY : This include dynamic size of messgae container based on length of mesage with round corners.
 
 *   HOW TO ESTABLISH CONNECTION
 1) For frist memeber, this member not need to click on join button as he/she is already in room but another needs to click on join button to establish a connection and have a video call.
