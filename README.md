@@ -12,6 +12,7 @@ Then, run command "npm run start" to start our server and then see this app in l
 5) Fifth Button : Start Recording Button
 6) Sixth Button : Stop Recording Button
 7) Seventh Button : Remote Audio ON/OFF Button
+8) Eighth Button : Delete all chats/Clean database Button
 
 *   FEATURES THAT I HAVE ADDED IN THIS APPLICATION
 1) Video ON/OFF FUNCTIONALITY : Through this, User can stop his/her video and ON his/her Video.
@@ -19,7 +20,7 @@ Then, run command "npm run start" to start our server and then see this app in l
 3) SCREEN PRESENT FUNCTIONALIYTY : You can Present Screen through this feature.
 4) RECORDING FUNCTIONALITY : Through this, User can start recording.
 5) AUDIO ON/OFF OF ANOTHER PEER : Through this, User can MUTE Another User Audio and UNMUTE another user Audio.
-6) MESSAGING FUNCTIONALITY : This include dynamic size of messgae container based on length of mesage with round corners.
+6) MESSAGING FUNCTIONALITY : This will show messages of previos users also or previous member who used that room.We can message before or after video call also.
 
 *   HOW TO ESTABLISH CONNECTION
 1) For frist memeber, this member not need to click on join button as he/she is already in room but another needs to click on join button to establish a connection and have a video call.
