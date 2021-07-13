@@ -195,6 +195,8 @@ navigator.mediaDevices.getUserMedia(constraints)        // Getting Camera and Au
   
   send_button.addEventListener("click",()=>{                   // Event Handler for Sending Message    
       var message_to_send=message.value
+      if(username==null) username=prompt("enter your username")
+      if(username==null) return
       if(message_to_send==" ")
       {
           alert("enter some message")
@@ -244,7 +246,7 @@ navigator.mediaDevices.getUserMedia(constraints)        // Getting Camera and Au
   })
   
   function download(vedioURL){                                  // Doenload function for downloading Recorded Video
-      let permission=confirm("want to download recoeding")
+      let permission=confirm("want to download recording")
       if(!permission) return
       var d=document.createElement("a")
       d.href=vedioURL
@@ -372,6 +374,8 @@ let RemoteMuted=false
   })
 
   clear_chats.addEventListener("click",()=>{
+      let permission=confirm("you want to delete all chats ?")
+      if(!permission) return
       socket.emit("clear_all_chats",{
           status:true
       })

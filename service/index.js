@@ -13,7 +13,7 @@ let io=socketIO(server)                 // Connect Socket TO Server
 app.use(express.static(static_path))    // Direct app to path of public
 console.log(static_path)
     
-mongo.connect(process.env.MONGODB_URI || "mongodb+srv://TeamsDB:Ayush@cluster0.tzgzp.mongodb.net/teams_chat?retryWrites=true&w=majority",{
+mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/",{
     useNewUrlParser:true,
     useUnifiedTopology:true
 },(err,db)=>{
