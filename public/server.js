@@ -17,7 +17,7 @@ var chat_header=document.getElementById("message_header")
 var record_btn=document.getElementById("record")
 var stop_record=document.getElementById("stop_record")
 var muteRemoteAudio=document.getElementById("remoteaudio")
-var dropDown=document.getElementById("dropDown")
+var clear_chats=document.getElementById("clear_chats")
 var count=0                     // count of users
 var recordmedia                 // instance for initiating media Recorder
 var clips=[]                    // array for storing recorded data
@@ -58,6 +58,33 @@ navigator.mediaDevices.getUserMedia(constraints)        // Getting Camera and Au
         console.log(err)
     })
     username=prompt("enter your username")              // Username Input
+    socket.on("show_chats",(data)=>{
+        if(data.length)
+        {
+            for(let i=0;i<data.length;i++)
+            {
+                var para=document.createElement("p")
+                para.innerHTML=data[i].username+" : "+data[i].message
+                para.setAttribute("class","inner_message")
+                var remote_side=document.createElement("div")
+                remote_side.appendChild(para)
+                remote_side.setAttribute("class","remote_message")
+                message_container.appendChild(remote_side);
+            }
+        }
+        else message_container.innerHTML=" "
+    })
+    socket.on("message_sending_to_another",(recieve)=>{ 
+        console.log("message recieved")
+        console.log(recieve.username+" : "+recieve.message)
+        var para=document.createElement("p")
+        para.innerHTML=recieve.username+" : "+recieve.message
+        para.setAttribute("class","inner_message")
+        var remote_side=document.createElement("div")
+        remote_side.appendChild(para)
+        remote_side.setAttribute("class","remote_message")
+        message_container.appendChild(remote_side);
+      })
     socket.on("connect_to_user",(e)=>{                  // Socket Listening
             document.getElementById("join").addEventListener("click",()=>{
             console.log("entered")
@@ -93,19 +120,12 @@ navigator.mediaDevices.getUserMedia(constraints)        // Getting Camera and Au
       .catch((err)=>{
           console.log(err)
       })
+
     }
-    datachannel.onmessage=(e)=>{                   // Recieving messages on DataChannel of Peer1
-        var recieve=JSON.parse(e.data)
-        console.log("message recieved")
-        console.log(recieve.username+" : "+recieve.message)
-        var para=document.createElement("p")
-        para.innerHTML=recieve.message
-        para.setAttribute("class","inner_message")
-        var remote_side=document.createElement("div")
-        remote_side.appendChild(para)
-        remote_side.setAttribute("class","remote_message")
-        message_container.appendChild(remote_side);
-    }
+    // datachannel.onmessage=(e)=>{ 
+    //     socket.on                  // Recieving messages on DataChannel of Peer1
+    //     var recieve=JSON.parse(e.data)
+    // }
     })
     socket.on("web_answer",(e)=>{                  // Listenning to Server on web_answer call
         console.log("peer1")
@@ -114,31 +134,32 @@ navigator.mediaDevices.getUserMedia(constraints)        // Getting Camera and Au
         console.log(peer1)
         
         // Setting message Header of peer1
-        var chat_header_para=document.createElement("p")
-        chat_header_para.innerHTML=e.username
-        chat_header_para.setAttribute("class","setName")
-        chat_header.appendChild(chat_header_para)
-        chat_header.style.borderBottom="thin solid black"
+        // var chat_header_para=document.createElement("p")
+        // chat_header_para.innerHTML=e.username
+        // chat_header_para.setAttribute("class","setName")
+        // chat_header.appendChild(chat_header_para)
+        // chat_header.style.borderBottom="thin solid black"
     })
 
     socket.on("web_offer",(e)=>{                            // Listenning to Server on web_offer Call
       peer2=new RTCPeerConnection(configuration)            // Creating Peer Connection of Peer2
-      peer2.addEventListener("datachannel",(e)=>{           // Recieving DataChannel Request
+    //   peer2.addEventListener("datachannel",(e)=>{           // Recieving DataChannel Request
         console.log("channel connected")
-        datachannel=e.channel
-        datachannel.onmessage=(e)=>{                        // Recieving messages on Data Channel of Peer2
-            var recieve=JSON.parse(e.data)
-            console.log("message recieved")
-            console.log(recieve.username+" : "+recieve.message)
-            var para=document.createElement("p")
-            para.innerHTML=recieve.message
-            para.setAttribute("class","inner_message")
-            var remote_side=document.createElement("div")
-            remote_side.appendChild(para)
-            remote_side.setAttribute("class","remote_message")
-            message_container.appendChild(remote_side);
-        }
-    })
+        // datachannel=e.channel
+            // socket.on("message_sending_to_another",(recieve)=>{
+            //     //var recieve=JSON.parse(e.data)
+            //     console.log("message recieved")
+            //     console.log(recieve.username+" : "+recieve.message)
+            //     var para=document.createElement("p")
+            //     para.innerHTML=recieve.username+" : "+recieve.message
+            //     para.setAttribute("class","inner_message")
+            //     var remote_side=document.createElement("div")
+            //     remote_side.appendChild(para)
+            //     remote_side.setAttribute("class","remote_message")
+            //     message_container.appendChild(remote_side);
+            // })                        // Recieving messages on Data Channel of Peer2
+        
+    // })
     
     localstream.getTracks().forEach((track)=>{              // Pushing Media Tracks of Peer2 in senders array
         senders.push(peer2.addTrack(track,localstream))
@@ -153,11 +174,11 @@ navigator.mediaDevices.getUserMedia(constraints)        // Getting Camera and Au
         peer2.setRemoteDescription(new RTCSessionDescription(e.data))       // Setting Remote Description of Peer2
         peer2.ontrack=add_remote_stream                                     // Setting Peer1 Media Stream on Peer2
         // Setting message Header of peer2
-        var chat_header_para=document.createElement("p")
-            chat_header_para.innerHTML=e.username
-            chat_header_para.setAttribute("class","setName")
-            chat_header.appendChild(chat_header_para)
-            chat_header.style.borderBottom="thin solid black"
+        // var chat_header_para=document.createElement("p")
+        //     chat_header_para.innerHTML=e.username
+        //     chat_header_para.setAttribute("class","setName")
+        //     chat_header.appendChild(chat_header_para)
+        //     chat_header.style.borderBottom="thin solid black"
 
       peer2.createAnswer()                                   // Answer generated by Peer2 for Peer1
       .then((answer)=>{
@@ -183,16 +204,17 @@ navigator.mediaDevices.getUserMedia(constraints)        // Getting Camera and Au
           username:username,
           message:message_to_send,
       }
-      datachannel.send(JSON.stringify(data))                // Data Channel Send Function To Send Data TO Another Peer
-      var para=document.createElement("p")
-      para.innerHTML=message_to_send
-      para.setAttribute("class","inner_message")
-      var my_side=document.createElement("div")
-      my_side.appendChild(para)
-      my_side.setAttribute("class","local_message")
-      message_container.appendChild(my_side);
-      console.log("message send : "+message_to_send)
-      message.value=" "
+    //   datachannel.send(JSON.stringify(data))                // Data Channel Send Function To Send Data TO Another Peer
+    var para=document.createElement("p")
+    para.innerHTML=username+" : "+message_to_send
+    para.setAttribute("class","inner_message")
+    var my_side=document.createElement("div")
+    my_side.appendChild(para)
+    my_side.setAttribute("class","local_message")
+    message_container.appendChild(my_side);
+    console.log("message send : "+message_to_send)
+    message.value=" "
+    socket.emit("input",data)
   })
 
   var options={
@@ -347,4 +369,10 @@ let RemoteMuted=false
         document.getElementById("remote_audio_off").style.display="inline"
         document.getElementById("remote_audio_on").style.display="none"
     }
+  })
+
+  clear_chats.addEventListener("click",()=>{
+      socket.emit("clear_all_chats",{
+          status:true
+      })
   })
